@@ -44,7 +44,7 @@ public class DBManager {
 	 * @throws SQLException
 	 *             クローズ処理に失敗した場合に送出
 	 */
-	public static void close(Connection connection) throws SQLException {
+	public static void closeDb(Connection connection) throws SQLException {
 		if (connection != null) {
 			connection.close();
 		}
@@ -58,7 +58,7 @@ public class DBManager {
 	 * @throws SQLException
 	 *             クローズ処理に失敗した場合に送出
 	 */
-	public static void close(PreparedStatement preparedStatement) throws SQLException {
+	public static void closePrepared(PreparedStatement preparedStatement) throws SQLException {
 		if (preparedStatement != null) {
 			preparedStatement.close();
 		}
@@ -72,7 +72,7 @@ public class DBManager {
 	 * @throws SQLException
 	 *             クローズ処理に失敗した場合に送出
 	 */
-	public static void close(ResultSet resultSet) throws SQLException {
+	public static void closeResult(ResultSet resultSet) throws SQLException {
 		if (resultSet != null) {
 			resultSet.close();
 		}

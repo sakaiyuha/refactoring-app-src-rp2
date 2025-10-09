@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import jp.co.sss.crud.util.ConstantSQL;
+import jp.co.sss.crud.util.Constants;
 
 /**
  * DB操作処理用のクラス
@@ -30,7 +31,7 @@ public class DBController {
 	 * @throws ClassNotFoundException ドライバクラスが不在の場合に送出
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 */
-	public static void find() throws ClassNotFoundException, SQLException {
+	public static void searchAll() throws ClassNotFoundException, SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -47,7 +48,7 @@ public class DBController {
 
 			//resultSetの結果Setがない場合はfalse
 			if (!resultSet.isBeforeFirst()) {
-				System.out.println("該当者はいませんでした");
+				System.out.println(Constants.TARGET_PERSON_NONE);
 				return;
 			}
 
@@ -58,15 +59,15 @@ public class DBController {
 				System.out.print(resultSet.getString("emp_name") + "\t");
 
 				int gender = Integer.parseInt(resultSet.getString("gender"));
-				if (gender == 0) {
+				if (gender == Constants.GENDER_NO_ANSWER) {
 					System.out.print("回答なし" + "\t");
-				} else if (gender == 1) {
+				} else if (gender == Constants.GENDER_MEN) {
 					System.out.print("男性" + "\t");
 
-				} else if (gender == 2) {
+				} else if (gender == Constants.GENDER_WOMEN) {
 					System.out.print("女性" + "\t");
 
-				} else if (gender == 9) {
+				} else if (gender == Constants.GENDER_OTHER) {
 					System.out.print("その他" + "\t");
 
 				}
@@ -78,11 +79,11 @@ public class DBController {
 			System.out.println("");
 		} finally {
 			// ResultSetをクローズ
-			DBManager.close(resultSet);
+			DBManager.closeResult(resultSet);
 			// Statementをクローズ
-			DBManager.close(preparedStatement);
+			DBManager.closePrepared(preparedStatement);
 			// DBとの接続を切断
-			DBManager.close(connection);
+			DBManager.closeDb(connection);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class DBController {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void findB() throws ClassNotFoundException, SQLException, IOException {
+	public static void nameSearch() throws ClassNotFoundException, SQLException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		// 検索ワード
@@ -115,7 +116,7 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(sql.toString());
 
 			// 検索条件となる値をバインド
-			preparedStatement.setString(1, "%" + searchWord + "%");
+			preparedStatement.setString(Constants.FOR_SEARCH, "%" + searchWord + "%");
 
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
@@ -134,15 +135,15 @@ public class DBController {
 
 				String genderString = resultSet.getString("gender");
 				int gender = Integer.parseInt(genderString);
-				if (gender == 0) {
+				if (gender == Constants.GENDER_NO_ANSWER) {
 					System.out.print("回答なし");
-				} else if (gender == 1) {
+				} else if (gender == Constants.GENDER_MEN) {
 					System.out.print("男性");
 
-				} else if (gender == 2) {
+				} else if (gender == Constants.GENDER_WOMEN) {
 					System.out.print("女性");
 
-				} else if (gender == 9) {
+				} else if (gender == Constants.GENDER_OTHER) {
 					System.out.print("その他");
 
 				}
@@ -158,11 +159,11 @@ public class DBController {
 
 		} finally {
 			// クローズ処理
-			DBManager.close(resultSet);
+			DBManager.closeResult(resultSet);
 			// Statementをクローズ
-			DBManager.close(preparedStatement);
+			DBManager.closePrepared(preparedStatement);
 			// DBとの接続を切断
-			DBManager.close(connection);
+			DBManager.closeDb(connection);
 		}
 	}
 
@@ -173,7 +174,7 @@ public class DBController {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void findC(String deptId) throws ClassNotFoundException, SQLException, IOException {
+	public static void deptIdSearch(String deptId) throws ClassNotFoundException, SQLException, IOException {
 
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -191,7 +192,7 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(sql.toString());
 
 			// 検索条件となる値をバインド
-			preparedStatement.setInt(1, Integer.parseInt(deptId));
+			preparedStatement.setInt(Constants.FOR_SEARCH, Integer.parseInt(deptId));
 
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
@@ -211,15 +212,15 @@ public class DBController {
 
 				String genderString = resultSet.getString("gender");
 				int gender = Integer.parseInt(genderString);
-				if (gender == 0) {
+				if (gender == Constants.GENDER_NO_ANSWER) {
 					System.out.print("回答なし");
-				} else if (gender == 1) {
+				} else if (gender == Constants.GENDER_MEN) {
 					System.out.print("男性");
 
-				} else if (gender == 2) {
+				} else if (gender == Constants.GENDER_WOMEN) {
 					System.out.print("女性");
 
-				} else if (gender == 9) {
+				} else if (gender == Constants.GENDER_OTHER) {
 					System.out.print("その他");
 
 				}
@@ -230,11 +231,11 @@ public class DBController {
 
 				String deptIdString = resultSet.getString("dept_id");
 				int deptId2 = Integer.parseInt(deptIdString);
-				if (deptId2 == 1) {
+				if (deptId2 == Constants.SALES_DEPARTMENT) {
 					System.out.println("営業部");
-				} else if (deptId2 == 2) {
+				} else if (deptId2 == Constants.ACCOUNTING_DEPARTMENT) {
 					System.out.println("経理部");
-				} else if (gender == 3) {
+				} else if (gender == Constants.GENERAL_AFFAIRS_PART) {
 					System.out.println("総務部");
 
 				}
@@ -243,11 +244,11 @@ public class DBController {
 			System.out.println("");
 		} finally {
 			// クローズ処理
-			DBManager.close(resultSet);
+			DBManager.closeResult(resultSet);
 			// Statementをクローズ
-			DBManager.close(preparedStatement);
+			DBManager.closePrepared(preparedStatement);
 			// DBとの接続を切断
-			DBManager.close(connection);
+			DBManager.closeDb(connection);
 		}
 	}
 
@@ -275,11 +276,11 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_INSERT);
 
 			// 入力値をバインド
-			preparedStatement.setString(1, empName);
-			preparedStatement.setInt(2, Integer.parseInt(gender));
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			preparedStatement.setObject(3, sdf.parse(birthday), Types.DATE);
-			preparedStatement.setInt(4, Integer.parseInt(deptId));
+			preparedStatement.setString(Constants.BIND_NAME, empName);
+			preparedStatement.setInt(Constants.BIND_GENDER, Integer.parseInt(gender));
+			SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
+			preparedStatement.setObject(Constants.BIND_BIRTHDAY, date.parse(birthday), Types.DATE);
+			preparedStatement.setInt(Constants.BIND_DEPTID, Integer.parseInt(deptId));
 
 			// SQL文を実行
 			preparedStatement.executeUpdate();
@@ -287,8 +288,8 @@ public class DBController {
 			// 登録完了メッセージを出力
 			System.out.println("社員情報を登録しました");
 		} finally {
-			DBManager.close(preparedStatement);
-			DBManager.close(connection);
+			DBManager.closePrepared(preparedStatement);
+			DBManager.closeDb(connection);
 		}
 	}
 
@@ -315,7 +316,7 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_UPDATE);
 
 			System.out.print("社員名：");
-			String emp_name = br.readLine();
+			String empName = br.readLine();
 			// 性別を入力
 			System.out.print("性別(0:回答しない, 1:男性, 2:女性, 9:その他):");
 			String gender = br.readLine();
@@ -328,21 +329,21 @@ public class DBController {
 			String deptId = br.readLine();
 
 			// 入力値をバインド
-			preparedStatement.setString(1, emp_name);
-			preparedStatement.setInt(2, Integer.parseInt(gender));
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			preparedStatement.setObject(3, sdf.parse(birthday), Types.DATE);
-			preparedStatement.setInt(4, Integer.parseInt(deptId));
-			preparedStatement.setInt(5, Integer.parseInt(empId));
+			preparedStatement.setString(Constants.BIND_NAME, empName);
+			preparedStatement.setInt(Constants.BIND_GENDER, Integer.parseInt(gender));
+			SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
+			preparedStatement.setObject(Constants.BIND_BIRTHDAY, date.parse(birthday), Types.DATE);
+			preparedStatement.setInt(Constants.BIND_DEPTID, Integer.parseInt(deptId));
+			preparedStatement.setInt(Constants.BIND_EMPID, Integer.parseInt(empId));
 
 			// SQL文の実行(失敗時は戻り値0)
 			preparedStatement.executeUpdate();
 
 		} finally {
 			// クローズ処理
-			DBManager.close(preparedStatement);
+			DBManager.closePrepared(preparedStatement);
 			// DBとの接続を切断
-			DBManager.close(connection);
+			DBManager.closeDb(connection);
 		}
 	}
 
@@ -367,7 +368,7 @@ public class DBController {
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_DELETE);
 
 			// 社員IDをバインド
-			preparedStatement.setInt(1, Integer.parseInt(empId));
+			preparedStatement.setInt(Constants.FOR_SEARCH, Integer.parseInt(empId));
 
 			// SQL文の実行(失敗時は戻り値0)
 			preparedStatement.executeUpdate();
@@ -382,8 +383,8 @@ public class DBController {
 		finally {
 			// Statementをクローズ
 			try {
-				DBManager.close(preparedStatement);
-				DBManager.close(connection);
+				DBManager.closePrepared(preparedStatement);
+				DBManager.closeDb(connection);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
